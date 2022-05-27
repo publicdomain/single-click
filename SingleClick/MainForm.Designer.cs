@@ -277,7 +277,7 @@ namespace SingleClick
         	this.timeNumericUpDown.TabIndex = 7;
         	this.timeNumericUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
         	this.timeNumericUpDown.Value = new decimal(new int[] {
-        	        	        	100,
+        	        	        	1000,
         	        	        	0,
         	        	        	0,
         	        	        	0});
@@ -285,6 +285,7 @@ namespace SingleClick
         	// 
         	// clickTimer
         	// 
+        	this.clickTimer.Interval = 1000;
         	this.clickTimer.Tick += new System.EventHandler(this.OnClickTimerTick);
         	// 
         	// MainForm
