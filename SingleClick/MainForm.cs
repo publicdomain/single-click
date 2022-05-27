@@ -122,6 +122,16 @@ namespace SingleClick
         }
 
         /// <summary>
+        /// Unsubscribe this instance.
+        /// </summary>
+        private void Unsubscribe()
+        {
+            m_GlobalHook.MouseDownExt -= GlobalHookMouseDownExt;
+
+            m_GlobalHook.Dispose();
+        }
+
+        /// <summary>
         /// Handles the global hook mouse down ext.
         /// </summary>
         /// <param name="sender">Sender object.</param>
