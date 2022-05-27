@@ -112,6 +112,16 @@ namespace SingleClick
         }
 
         /// <summary>
+        /// Subscribe this instance.
+        /// </summary>
+        private void Subscribe()
+        {
+            m_GlobalHook = Hook.GlobalEvents();
+
+            m_GlobalHook.MouseDownExt += GlobalHookMouseDownExt;
+        }
+
+        /// <summary>
         /// Handles the global hook mouse down ext.
         /// </summary>
         /// <param name="sender">Sender object.</param>
