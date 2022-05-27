@@ -91,6 +91,9 @@ namespace SingleClick
                 this.Unsubscribe();
             }
 
+            // Toggle back
+            this.suppressClick = false;
+
             // Reset counters
             this.passed = 0;
             this.blocked = 0;
@@ -107,7 +110,14 @@ namespace SingleClick
         /// <param name="e">Event arguments.</param>
         private void OnOptionsToolStripMenuItemDropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            // TODO Add code
+            // Set tool strip menu item
+            ToolStripMenuItem toolStripMenuItem = (ToolStripMenuItem)e.ClickedItem;
+
+            // Toggle checked
+            toolStripMenuItem.Checked = !toolStripMenuItem.Checked;
+
+            // Set topmost by check box
+            this.TopMost = this.alwaysOnTopToolStripMenuItem.Checked;
         }
 
         /// <summary>
@@ -165,15 +175,15 @@ namespace SingleClick
                     this.suppressClick = true;
 
                     this.passed++;
+
+                    // Enable timer
+                    this.clickTimer.Start();
                 }
                 else
                 {
                     e.Handled = true;
 
                     this.blocked++;
-
-                    // Toggle back
-                    this.suppressClick = false;
                 }
             }
 
@@ -218,9 +228,6 @@ namespace SingleClick
             m_GlobalHook.MouseUpExt -= GlobalHookMouseUpExt;
 
             m_GlobalHook.Dispose();
-
-            // Toggle back
-            this.suppressClick = false;
         }
 
         /// <summary>
@@ -237,7 +244,7 @@ namespace SingleClick
         /// <summary>
         /// Handles the click timer tick.
         /// </summary>
-        /// <param name="sender">Sender.</param>/// <param name="sender">Sender object.</param>
+        /// <param name="sender">Sender object.</param>
         /// <param name="e">Event arguments.</param>
         private void OnClickTimerTick(object sender, EventArgs e)
         {
