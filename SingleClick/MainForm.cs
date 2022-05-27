@@ -230,7 +230,8 @@ namespace SingleClick
         /// <param name="e">Event arguments.</param>
         private void OnTimeNumericUpDownValueChanged(object sender, EventArgs e)
         {
-            // TODO Add code
+            // Set timer interval
+            this.clickTimer.Interval = (int)this.timeNumericUpDown.Value;
         }
 
         /// <summary>
