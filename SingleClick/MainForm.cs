@@ -7,14 +7,31 @@ namespace SingleClick
     // Directives
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Drawing;
     using System.Windows.Forms;
+    using Gma.System.MouseKeyHook;
 
     /// <summary>
     /// Description of MainForm.
     /// </summary>
     public partial class MainForm : Form
     {
+        /// <summary>
+        /// The m global hook.
+        /// </summary>
+        private IKeyboardMouseEvents m_GlobalHook;
+
+        /// <summary>
+        /// The elapsed stopwatch.
+        /// </summary>
+        private Stopwatch elapsedStopwatch = new Stopwatch();
+
+        /// <summary>
+        /// The is second click.
+        /// </summary>
+        private bool isSecondClick = false;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="T:SingleClick.MainForm"/> class.
         /// </summary>
@@ -92,6 +109,38 @@ namespace SingleClick
         private void OnAboutToolStripMenuItemClick(object sender, EventArgs e)
         {
             // TODO Add code
+        }
+
+        /// <summary>
+        /// Handles the global hook mouse down ext.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void GlobalHookMouseDownExt(object sender, MouseEventExtArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                if (this.isSecondClick)
+                {
+                    // Check if must toggle 
+                    if (this.elapsedStopwatch.Elapsed.TotalMilliseconds >= (double)this.timeNumericUpDown.Value)
+                    {
+                        this.isSecondClick = false;
+                    }
+                    else
+                    {
+                        e.Handled = true;
+                    }
+                }
+                else
+                {
+                    // Start the stopwatch
+                    this.elapsedStopwatch.Restart();
+
+                    // Toggle second click flag
+                    this.isSecondClick = true;
+                }
+            }
         }
 
         /// <summary>
