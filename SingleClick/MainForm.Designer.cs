@@ -29,6 +29,7 @@ namespace SingleClick
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			this.logSaveFileDialog = new System.Windows.Forms.SaveFileDialog();
 			this.blockedToolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -53,6 +54,7 @@ namespace SingleClick
 			this.mainTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
 			this.timeLabel = new System.Windows.Forms.Label();
 			this.timeNumericUpDown = new System.Windows.Forms.NumericUpDown();
+			this.clickTimer = new System.Windows.Forms.Timer(this.components);
 			this.mainStatusStrip.SuspendLayout();
 			this.mainMenuStrip.SuspendLayout();
 			this.mainTableLayoutPanel.SuspendLayout();
@@ -277,6 +279,11 @@ namespace SingleClick
 									0,
 									0,
 									0});
+			this.timeNumericUpDown.ValueChanged += new System.EventHandler(this.TimeNumericUpDownValueChanged);
+			// 
+			// clickTimer
+			// 
+			this.clickTimer.Tick += new System.EventHandler(this.ClickTimerTick);
 			// 
 			// MainForm
 			// 
@@ -300,6 +307,7 @@ namespace SingleClick
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.Timer clickTimer;
 		private System.Windows.Forms.NumericUpDown timeNumericUpDown;
 		private System.Windows.Forms.Label timeLabel;
 		private System.Windows.Forms.TableLayoutPanel mainTableLayoutPanel;

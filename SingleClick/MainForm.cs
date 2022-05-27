@@ -23,11 +23,6 @@ namespace SingleClick
         private IKeyboardMouseEvents m_GlobalHook;
 
         /// <summary>
-        /// The elapsed stopwatch.
-        /// </summary>
-        private Stopwatch elapsedStopwatch = new Stopwatch();
-
-        /// <summary>
         /// The passed.
         /// </summary>
         private int passed = 0;
@@ -85,7 +80,24 @@ namespace SingleClick
         /// <param name="e">Event arguments.</param>
         private void OnNewToolStripMenuItemClick(object sender, EventArgs e)
         {
-            // TODO Add code
+            // TODO Stop [Can be made DRY with a separate function]
+            if (this.startStopButton.Text.EndsWith("p", StringComparison.InvariantCulture))
+            {
+                // Reset to start
+                this.startStopButton.Text = "&Start";
+                this.startStopButton.ForeColor = Color.DarkGreen;
+
+                // Stop
+                this.Unsubscribe();
+            }
+
+            // Reset counters
+            this.passed = 0;
+            this.blocked = 0;
+
+            // TODO Update status labels [Can be made DRY with a separate function]
+            this.passedToolStripStatusLabel.Text = this.passed.ToString();
+            this.blockedToolStripStatusLabel.Text = this.blocked.ToString();
         }
 
         /// <summary>
@@ -150,34 +162,18 @@ namespace SingleClick
                 if (!this.suppressClick)
                 {
                     // First click, toggle
-                    if (this.elapsedStopwatch.ElapsedMilliseconds == 0)
-                    {
-                        this.suppressClick = true;
+                    this.suppressClick = true;
 
-                        // Restart the stopwatch
-                        this.elapsedStopwatch.Restart();
-
-                        this.passed++;
-                    }
+                    this.passed++;
                 }
                 else
                 {
-                    // Second click
-                    if (this.elapsedStopwatch.ElapsedMilliseconds >= (double)this.timeNumericUpDown.Value)
-                    {
-                        this.elapsedStopwatch.Reset();
+                    e.Handled = true;
 
-                        this.passed++;
+                    this.blocked++;
 
-                        // Toggle back
-                        this.suppressClick = false;
-                    }
-                    else
-                    {
-                        e.Handled = true;
-
-                        this.blocked++;
-                    }
+                    // Toggle back
+                    this.suppressClick = false;
                 }
             }
 
@@ -222,6 +218,29 @@ namespace SingleClick
             m_GlobalHook.MouseUpExt -= GlobalHookMouseUpExt;
 
             m_GlobalHook.Dispose();
+
+            // Toggle back
+            this.suppressClick = false;
+        }
+
+        /// <summary>
+        /// Handles the time numeric up down value changed.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnTimeNumericUpDownValueChanged(object sender, EventArgs e)
+        {
+            // TODO Add code
+        }
+
+        /// <summary>
+        /// Handles the click timer tick.
+        /// </summary>
+        /// <param name="sender">Sender.</param>/// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnClickTimerTick(object sender, EventArgs e)
+        {
+            // TODO Add code
         }
 
         /// <summary>
