@@ -241,7 +241,11 @@ namespace SingleClick
         /// <param name="e">Event arguments.</param>
         private void OnClickTimerTick(object sender, EventArgs e)
         {
-            // TODO Add code
+            // Toggle back
+            this.suppressClick = false;
+
+            // Disable timer
+            this.clickTimer.Stop();
         }
 
         /// <summary>
