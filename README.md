@@ -18,7 +18,7 @@ v0.1.0:
 
 - User-configurable interval.
 - Start/stop button.
-- Passed and blocked conuters.
+- Passed and blocked counters.
 - File/New reset (CTRL+N)
 - Always on top.
 
