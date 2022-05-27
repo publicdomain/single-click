@@ -28,9 +28,18 @@ namespace SingleClick
         private Stopwatch elapsedStopwatch = new Stopwatch();
 
         /// <summary>
-        /// The is second click.
+        /// The passed.
         /// </summary>
-        private bool isSecondClick = false;
+        private int passed = 0;
+
+        /// <summary>
+        /// The blocked.
+        /// </summary>
+        private int blocked = 0;
+        /// <summary>
+        /// The suppress click.
+        /// </summary>
+        private bool suppressClick = false;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:SingleClick.MainForm"/> class.
@@ -48,7 +57,25 @@ namespace SingleClick
         /// <param name="e">Event arguments.</param>
         private void OnStartStopButtonClick(object sender, EventArgs e)
         {
-            // TODO Add code
+            // Check for Star(t) vs Sto(p)
+            if (this.startStopButton.Text.EndsWith("t", StringComparison.InvariantCulture))
+            {
+                // Change to stop
+                this.startStopButton.Text = "&Stop";
+                this.startStopButton.ForeColor = Color.Red;
+
+                // Start
+                this.Subscribe();
+            }
+            else
+            {
+                // Reset to start
+                this.startStopButton.Text = "&Start";
+                this.startStopButton.ForeColor = Color.DarkGreen;
+
+                // Stop
+                this.Unsubscribe();
+            }
         }
 
         /// <summary>
@@ -112,6 +139,70 @@ namespace SingleClick
         }
 
         /// <summary>
+        /// Globals the hook mouse up ext.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">E.</param>
+        private void GlobalHookMouseUpExt(object sender, MouseEventExtArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                if (!this.suppressClick)
+                {
+                    // First click, toggle
+                    if (this.elapsedStopwatch.ElapsedMilliseconds == 0)
+                    {
+                        this.suppressClick = true;
+
+                        // Restart the stopwatch
+                        this.elapsedStopwatch.Restart();
+
+                        this.passed++;
+                    }
+                }
+                else
+                {
+                    // Second click
+                    if (this.elapsedStopwatch.ElapsedMilliseconds >= (double)this.timeNumericUpDown.Value)
+                    {
+                        this.elapsedStopwatch.Reset();
+
+                        this.passed++;
+
+                        // Toggle back
+                        this.suppressClick = false;
+                    }
+                    else
+                    {
+                        e.Handled = true;
+
+                        this.blocked++;
+                    }
+                }
+            }
+
+            // Update status labels
+            this.passedToolStripStatusLabel.Text = this.passed.ToString();
+            this.blockedToolStripStatusLabel.Text = this.blocked.ToString();
+        }
+
+        /// <summary>
+        /// Globals the hook mouse down ext.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">E.</param>
+        private void GlobalHookMouseDownExt(object sender, MouseEventExtArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                if (this.suppressClick)
+                {
+                    e.Handled = true;
+                }
+            }
+        }
+
+        /// <summary>
         /// Subscribe this instance.
         /// </summary>
         private void Subscribe()
@@ -119,48 +210,18 @@ namespace SingleClick
             m_GlobalHook = Hook.GlobalEvents();
 
             m_GlobalHook.MouseDownExt += GlobalHookMouseDownExt;
+            m_GlobalHook.MouseUpExt += GlobalHookMouseUpExt;
         }
 
         /// <summary>
         /// Unsubscribe this instance.
         /// </summary>
-        private void Unsubscribe()
+        public void Unsubscribe()
         {
             m_GlobalHook.MouseDownExt -= GlobalHookMouseDownExt;
+            m_GlobalHook.MouseUpExt -= GlobalHookMouseUpExt;
 
             m_GlobalHook.Dispose();
-        }
-
-        /// <summary>
-        /// Handles the global hook mouse down ext.
-        /// </summary>
-        /// <param name="sender">Sender object.</param>
-        /// <param name="e">Event arguments.</param>
-        private void GlobalHookMouseDownExt(object sender, MouseEventExtArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                if (this.isSecondClick)
-                {
-                    // Check if must toggle 
-                    if (this.elapsedStopwatch.Elapsed.TotalMilliseconds >= (double)this.timeNumericUpDown.Value)
-                    {
-                        this.isSecondClick = false;
-                    }
-                    else
-                    {
-                        e.Handled = true;
-                    }
-                }
-                else
-                {
-                    // Start the stopwatch
-                    this.elapsedStopwatch.Restart();
-
-                    // Toggle second click flag
-                    this.isSecondClick = true;
-                }
-            }
         }
 
         /// <summary>
