@@ -138,7 +138,8 @@ namespace SingleClick
         /// <param name="e">Event arguments.</param>
         private void OnOriginalThreadRedditcomToolStripMenuItemClick(object sender, EventArgs e)
         {
-            // TODO Add code
+            // Open original thread
+            Process.Start("https://www.reddit.com/r/software/comments/uyeedl/im_looking_for_software_that_disables_my_left/");
         }
 
         /// <summary>
